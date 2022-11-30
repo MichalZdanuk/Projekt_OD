@@ -46,11 +46,11 @@ def contains_special_char(string):
 
 def check_if_safe_from_dictionary_attack(password):
     #checking first dictionary - most common passwords
-    with open('/home/zdanukm/Projects/Projekt_OchronaDanych/flaskapp/dictionary_passwords/500-worst-passwords.txt') as myfile:
+    with open('flaskapp/dictionary_passwords/500-worst-passwords.txt') as myfile:
         if password in myfile.read():
             return False
     #checking first dictionary - most common passwords ex2
-    with open('/home/zdanukm/Projects/Projekt_OchronaDanych/flaskapp/dictionary_passwords/top_common.txt') as myfile:
+    with open('flaskapp/dictionary_passwords/top_common.txt') as myfile:
         if password in myfile.read():
             return False
     #checking most common 50000 polish words with most common suffixes
@@ -61,7 +61,7 @@ def check_if_safe_from_dictionary_attack(password):
 suffix_list=['','1','123','12345','x','!','?']
 
 def check_if_in_dict_combination(password):
-    file1 = open('/home/zdanukm/Projects/Projekt_OchronaDanych/flaskapp/dictionary_passwords/50000-polish-words.txt', 'r')
+    file1 = open('flaskapp/dictionary_passwords/50000-polish-words.txt', 'r')
     while True:
         line = file1.readline()
         for suf in suffix_list:
@@ -71,26 +71,3 @@ def check_if_in_dict_combination(password):
         if not line:
             break
     return False
-
-print("checking")
-
-if(not check_if_in_dict_combination('wybierali12')):
-    print('Found')
-
-def prepare_file():
-    file1 = open('/home/zdanukm/Projects/Projekt_OchronaDanych/flaskapp/dictionary_passwords/huge_list.txt', 'r')
-    file2 = open('/home/zdanukm/Projects/Projekt_OchronaDanych/flaskapp/dictionary_passwords/new_huge_list.txt','a')
-    while True:
-        line = file1.readline()
-        word = ''
-        for character in line:
-            if not character.isdigit():
-                word = word + character
-            else:
-                word = word[:-1] + '\n'
-                break
-        file2.write(word)
-        if not line:
-            break
-
-#prepare_file()

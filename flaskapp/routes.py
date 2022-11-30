@@ -34,6 +34,9 @@ def register():
         if(flaskapp.validate_data.check_if_detected_xss_attack(form.email.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.username.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.password.data)):
             flash("WARNING!!! TRIED DETECTED POSSIBLE XSS ATTACK", 'danger')
             return render_template('register.html', title='Register', form=form)
+        if(flaskapp.validate_data.check_if_detected_injection_attack(form.email.data) or flaskapp.validate_data.check_if_detected_injection_attack(form.username.data) or flaskapp.validate_data.check_if_detected_injection_attack(form.password.data)):
+            flash("WARNING!!! TRIED DETECTED POSSIBLE SQL INJECTION ATTACK", 'danger')
+            return render_template('register.html', title='Register', form=form)
         entropy = flaskapp.pass_strength.calc_entropy(form.password.data)
         if (entropy < 30):
              message = f"Too weak password(low entropy). ENTROPY = {entropy} At least should be 50"
@@ -63,6 +66,9 @@ def login():
         session_email = session['email']=form.email.data # added
         if(flaskapp.validate_data.check_if_detected_xss_attack(form.email.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.password.data)):
             flash("WARNING!!! TRIED DETECTED POSSIBLE XSS ATTACK", 'danger')
+            return render_template('login.html', title='Login', form=form)
+        if(flaskapp.validate_data.check_if_detected_injection_attack(form.email.data) or flaskapp.validate_data.check_if_detected_injection_attack(form.password.data)):
+            flash("WARNING!!! TRIED DETECTED POSSIBLE SQL INJECTION ATTACK", 'danger')
             return render_template('login.html', title='Login', form=form)
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
@@ -106,8 +112,11 @@ def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-        if(flaskapp.validate_data.check_if_detected_xss_attack(form.username.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.email.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.old_password.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.email.data)):
+        if(flaskapp.validate_data.check_if_detected_xss_attack(form.username.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.email.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.old_password.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.new_password.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.email.data)):
             flash("WARNING!!! TRIED DETECTED POSSIBLE XSS ATTACK", 'danger')
+            return redirect(url_for('account'))
+        if(flaskapp.validate_data.check_if_detected_injection_attack(form.username.data) or flaskapp.validate_data.check_if_detected_injection_attack(form.email.data) or flaskapp.validate_data.check_if_detected_injection_attack(form.old_password.data) or flaskapp.validate_data.check_if_detected_injection_attack(form.new_password.data) or flaskapp.validate_data.check_if_detected_injection_attack(form.email.data)):
+            flash("WARNING!!! TRIED DETECTED POSSIBLE SQL INJECTION ATTACK", 'danger')
             return redirect(url_for('account'))
         entropy = flaskapp.pass_strength.calc_entropy(form.new_password.data)
         if (entropy < 30):
@@ -219,6 +228,12 @@ def reset_request():
         return redirect(url_for('home'))
     form = RequestResetForm()
     if form.validate_on_submit():
+        if(flaskapp.validate_data.check_if_detected_xss_attack(form.email.data)):
+            flash("WARNING!!! TRIED DETECTED POSSIBLE XSS ATTACK", 'danger')
+            return redirect(url_for('reset_request'))
+        if(flaskapp.validate_data.check_if_detected_injection_attack(form.email.data)):
+            flash("WARNING!!! TRIED DETECTED POSSIBLE SQL INJECTION ATTACK", 'danger')
+            return redirect(url_for('reset_request'))
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
         flash('An email has been sent with instructions to reset your password.', 'info')
@@ -236,6 +251,12 @@ def reset_token(token):
         return redirect(url_for('reset_request'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
+        if(flaskapp.validate_data.check_if_detected_xss_attack(form.password.data) or flaskapp.validate_data.check_if_detected_xss_attack(form.confirm_password.data)):
+            flash("WARNING!!! TRIED DETECTED POSSIBLE XSS ATTACK", 'danger')
+            return redirect(url_for('reset_request'))
+        if(flaskapp.validate_data.check_if_detected_injection_attack(form.password.data) or flaskapp.validate_data.check_if_detected_injection_attack(form.confirm_password.data)):
+            flash("WARNING!!! TRIED DETECTED POSSIBLE SQL INJECTION ATTACK", 'danger')
+            return redirect(url_for('reset_request'))
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user.password = hashed_password
         db.session.commit()

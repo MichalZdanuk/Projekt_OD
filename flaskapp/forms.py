@@ -9,7 +9,7 @@ class RegistrationForm(FlaskForm):
     username = StringField('Username',
                             validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email',
-                            validators=[DataRequired(), Email()])
+                            validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
                                     validators=[DataRequired(), EqualTo('password')])
@@ -27,7 +27,7 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('Email',
-                            validators=[DataRequired(), Email()])
+                            validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
@@ -36,7 +36,7 @@ class UpdateAccountForm(FlaskForm):
     username = StringField('Username',
                             validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email',
-                            validators=[DataRequired(), Email()])
+                            validators=[DataRequired()])
     old_password = PasswordField('Old_Password', validators=[DataRequired()])                    
     new_password = PasswordField('Password')
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg','png'])])
@@ -62,14 +62,8 @@ class PostForm(FlaskForm):
 
 class RequestResetForm(FlaskForm):
     email = StringField('Email',
-                            validators=[DataRequired(), Email()])
+                            validators=[DataRequired()])
     submit = SubmitField('Request Password Reset')
-
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user is None:
-            raise ValidationError('There is no account with this email. You must register first.')
-
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
