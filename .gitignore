@@ -1,2 +1,4 @@
 instrukcja_konf_bazy
 __pycache__/
+cert.pem
+key.pem

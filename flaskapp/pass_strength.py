@@ -1,6 +1,6 @@
 import math
 def calc_entropy(password):
-    n = 0
+    n = 1
     if(contains_lower(password)):
         n += 26
     if(contains_upper(password)):
@@ -12,6 +12,13 @@ def calc_entropy(password):
     print("n = " + str(n))
     return len(password)*math.log2(n)
 
+def inform_about_password_strength(entropy):
+    if entropy < 50:
+        return "Weak password"
+    elif entropy >= 50:
+        return "Decent password"
+    elif entropy > 80:
+        return "Strong password"
 
 def contains_number(string):
     return any(char.isdigit() for char in string)

@@ -78,3 +78,14 @@ a.article-title:hover {
 .account-heading {
     font-size: 2.5rem;
 }
+
+.picture_card {
+    border: solid 2px #333333;
+    border-radius: 20px;
+    box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
+}
+
+.picture_card_content{
+    margin-left: 50px;
+    margin-right: 50px;
+}

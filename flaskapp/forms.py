@@ -4,21 +4,29 @@ from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flaskapp.models import User
+import flaskapp.validate_data as validator
 
-class RegistrationForm(FlaskForm):
+
+class RegistrationForm(FlaskForm):#dorobic walidacje skladni formatu danych
     username = StringField('Username',
                             validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email',
-                            validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+                            validators=[DataRequired(), Email(), Length(min=2, max=50)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=2, max=50)])
     confirm_password = PasswordField('Confirm Password',
-                                    validators=[DataRequired(), EqualTo('password')])
+                                    validators=[DataRequired(), EqualTo('password'), Length(min=2, max=50)])
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user:
             raise ValidationError('That username is taken. Please choose a different one.')
+        if not validator.is_userfield_valid(username.data):
+            raise ValidationError('Invalid username syntax')
+    
+    def validate_password(self, password):
+        if not validator.is_userfield_valid(password.data):
+            raise ValidationError('Invalid password syntax')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
@@ -27,17 +35,21 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('Email',
-                            validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+                            validators=[DataRequired(), Email(), Length(min=2, max=50)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=2, max=50)])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+    def validate_password(self, password):
+        if not validator.is_userfield_valid(password.data):
+            raise ValidationError('Invalid password syntax')
 
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username',
                             validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email',
-                            validators=[DataRequired()])
-    old_password = PasswordField('Old_Password', validators=[DataRequired()])                    
+                            validators=[DataRequired(), Email(), Length(min=2, max=50)])
+    old_password = PasswordField('Old_Password', validators=[DataRequired(), Length(min=2, max=50)])                    
     new_password = PasswordField('Password')
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg','png'])])
     submit = SubmitField('Update')
@@ -47,6 +59,17 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(username=username.data).first()
             if user:
                 raise ValidationError('That username is taken. Please choose a different one.')
+            if not validator.is_userfield_valid(username.data):
+                raise ValidationError('Invalid username syntax')
+
+    def validate_old_password(self, old_password):
+        if not validator.is_userfield_valid(old_password.data):
+            raise ValidationError('Invalid password syntax')
+
+    def validate_new_password(self, new_password):
+        if new_password.data != "":
+            if not validator.is_userfield_valid(new_password.data):
+                raise ValidationError('Invalid password syntax')
 
     def validate_email(self, email):
         if email.data != current_user.email:
@@ -54,19 +77,40 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('That email is taken. Please choose a different one.')
 
-
-class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
-    submit = SubmitField('Post')
+class UploadPictureForm(FlaskForm):
+    public_picture = FileField('Upload Public Picture', validators=[FileAllowed(['png'])])
+    protected_picture = FileField('Upload Protected Picture', validators=[FileAllowed(['png'])])
+    submit = SubmitField('Update')
 
 class RequestResetForm(FlaskForm):
     email = StringField('Email',
-                            validators=[DataRequired()])
+                            validators=[DataRequired(), Email(), Length(min=2, max=50)])
     submit = SubmitField('Request Password Reset')
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=2, max=50)])
     confirm_password = PasswordField('Confirm Password',
-                                    validators=[DataRequired(), EqualTo('password')])
+                                    validators=[DataRequired(), EqualTo('password'), Length(min=2, max=50)])
     submit = SubmitField('Reset Password')
+
+    def validate_password(self, password):
+        if not validator.is_userfield_valid(password.data):
+            raise ValidationError('Invalid password syntax')
+    def validate_confirm_password(self, confirm_password):
+        if not validator.is_userfield_valid(confirm_password.data):
+            raise ValidationError('Invalid password syntax')
+
+#adding permission for other user
+class PermissionForm(FlaskForm):
+    allowed_user = StringField('Allow User')
+    disallowed_user = StringField('Disallow User')
+
+    # def validate_allowed_user(self, allowed_user):
+    #     if allowed_user.data != "":
+    #         if not validator.is_userfield_valid(allowed_user.data):
+    #             raise ValidationError('Invalid username')
+    # def validate_disallowed_user(self, disallowed_user):
+    #     if disallowed_user.data != "":
+    #         if not validator.is_userfield_valid(disallowed_user.data):
+    #             raise ValidationError('Invalid username')
+    submit = SubmitField('Manage Permission')

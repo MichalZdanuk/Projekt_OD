@@ -1,3 +1,5 @@
+import re
+
 def check_if_detected_xss_attack(data_to_be_validated):
     if "<script>" in data_to_be_validated:
         return True
@@ -38,3 +40,19 @@ def check_if_detected_injection_attack(data_to_be_validated):
         return True
 
     return False
+
+def is_userfield_valid(username):
+    if re.match("^[a-zA-Z0-9_.-]+$", username) is not None:
+        return True
+    else:
+        return False
+
+def is_file_hostile(file):
+    bytes_output = file.read()
+    output_extension = [0 for i in range(4)] 
+    for i in range(4):
+        output_extension[i] = bytes_output[i]
+    if not ("PNG" in "".join(map(chr, output_extension))):
+        return True
+    else:
+        return False

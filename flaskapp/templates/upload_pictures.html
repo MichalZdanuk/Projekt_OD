@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <div class="media">
+        <div class="media-body">
+            <h2 class="account-heading">{{ current_user.username }}</h2>
+            <p class="text-secondary">{{ current_user.email }}</p>
+        </div>
+        </div>
+            <form method="POST" action="" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Upload public picture</legend>
+                    <div class="form-group">
+                        {{ form.public_picture.label() }}
+                        {{ form.public_picture(class="form-control-file") }}
+                        {% if form.public_picture.errors %}
+                            {% for error in form.public_picture.errors %}
+                                <span class="text-danger">{{ error }}</span></div></br>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+            <form method="POST" action="" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Upload protected picture</legend>
+                    <div class="form-group">
+                        {{ form.protected_picture.label() }}
+                        {{ form.protected_picture(class="form-control-file") }}
+                        {% if form.protected_picture.errors %}
+                            {% for error in form.protected_picture.errors %}
+                                <span class="text-danger">{{ error }}</span></div></br>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+    </div>
+{% endblock content %}
