@@ -11,9 +11,15 @@ Wykorzystane techniki zapewniajace odpowiedni poziom bezpieczenstwa:
 ***
 ### Podstawowe wymagania zrealizowane w celu zapewnienia bezpieczenstwa:
 * **(kluczowe)** restrykcyjna walidacja danych pochodzących z formularza login-hasło,
-* **(kluczowe)** przechowywanie hasła chronione funkcją hash,
+* **(kluczowe)** przechowywanie hasła chronione funkcją hash z solą,
+* **(kluczowe)** możliwość umieszczenia na serwerze obrazków dostępnych prywatnie lub dla określonych użytkowni-
+ków,
+* **(kluczowe)** weryfikacja bezpieczeństwa przechowywanych plików graficznych,
+* **(kluczowe)** zabezpieczenie transmisji poprzez wykorzystanie protokołu https,
 * **(kluczowe)** możliwość zmiany hasła,
 * **(kluczowe)** możliwość odzyskania dostępu w przypadku utraty hasła,
+
+### Wymagania dodatkowe zrealizowane w celu zapewnienia bezpieczenstwa:
 * monitorowanie liczby nieudanych prób logowania,
 * informowanie użytnownika o jakości jego hasła (jego entropii),
 * kontrola odporności nowego hasła na ataki słownikowe.
