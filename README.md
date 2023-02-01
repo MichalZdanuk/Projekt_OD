@@ -1,7 +1,5 @@
 # Projekt_OchronaDanych
-### Mini-projekt zrealizowany w ramach przedmiotu "Ochrona danych w systemach informatycznych".
-
-### Celem jest napisanie prostej aplikacji internetowej spełniającej wysokie standardy bezpieczeństwa.
+### Mini-projekt zrealizowany w ramach przedmiotu "Ochrona danych w systemach informatycznych", semestr V na Politechnice Warszawskiej. Celem było napisanie prostej aplikacji internetowej spełniającej wysokie standardy bezpieczeństwa.
 ***
 Wykorzystane techniki zapewniajace odpowiedni poziom bezpieczenstwa:
 * walidacja danych wejściowych (z negatywnym nastawieniem)
