@@ -93,14 +93,12 @@ def login():
         return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
-        session_email = session['email']=form.email.data # added
+        session_email = session['email']=form.email.data
         if(validator.check_if_detected_xss_attack(form.email.data) or validator.check_if_detected_xss_attack(form.password.data)):
             flash("WARNING!!! WRONG DATA", 'danger')
-            #flash("WARNING!!! TRIED DETECTED POSSIBLE XSS ATTACK", 'danger')
             return render_template('login.html', title='Login', form=form)
         if(validator.check_if_detected_injection_attack(form.email.data) or validator.check_if_detected_injection_attack(form.password.data)):
             flash("WARNING!!! WRONG DATA", 'danger')
-            #flash("WARNING!!! TRIED DETECTED POSSIBLE SQL INJECTION ATTACK", 'danger')
             return render_template('login.html', title='Login', form=form)
         user = User.query.filter_by(email=form.email.data).first()
         if user and check_password(form.password.data.encode('utf-8'), user.password.encode('utf-8')): #bcrypt.check_password_hash(user.password, form.password.data):
@@ -159,10 +157,10 @@ def account():
     if form.validate_on_submit():
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         if(validator.check_if_detected_xss_attack(form.username.data) or validator.check_if_detected_xss_attack(form.email.data) or validator.check_if_detected_xss_attack(form.old_password.data) or validator.check_if_detected_xss_attack(form.new_password.data) or validator.check_if_detected_xss_attack(form.email.data)):
-            flash("WARNING!!! WRONG DATA", 'danger')#DETECTED POSSIBLE XSS ATTACK
+            flash("WARNING!!! WRONG DATA", 'danger')
             return redirect(url_for('account'))
         if(validator.check_if_detected_injection_attack(form.username.data) or validator.check_if_detected_injection_attack(form.email.data) or validator.check_if_detected_injection_attack(form.old_password.data) or validator.check_if_detected_injection_attack(form.new_password.data) or validator.check_if_detected_injection_attack(form.email.data)):
-            flash("WARNING!!! WRONG DATA", 'danger')#DETECTED POSSIBLE SQL INJECTION ATTACK
+            flash("WARNING!!! WRONG DATA", 'danger')
             return redirect(url_for('account'))
         entropy = password_checker.calc_entropy(form.new_password.data)
         if (form.new_password.data != '' and entropy < 30):
@@ -229,10 +227,10 @@ def reset_request():
     form = RequestResetForm()
     if form.validate_on_submit():
         if(validator.check_if_detected_xss_attack(form.email.data)):
-            flash("WARNING!!! WRONG DATA", 'danger')#DETECTED POSSIBLE XSS ATTACK
+            flash("WARNING!!! WRONG DATA", 'danger')
             return redirect(url_for('reset_request'))
         if(validator.check_if_detected_injection_attack(form.email.data)):
-            flash("WARNING!!! WRONG DATA", 'danger')#DETECTED POSSIBLE SQL INJECTION ATTACK
+            flash("WARNING!!! WRONG DATA", 'danger')
             return redirect(url_for('reset_request'))
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
@@ -252,10 +250,10 @@ def reset_token(token):
     form = ResetPasswordForm()
     if form.validate_on_submit():
         if(validator.check_if_detected_xss_attack(form.password.data) or validator.check_if_detected_xss_attack(form.confirm_password.data)):
-            flash("WARNING!!! WRONG DATA", 'danger')#DETECTED POSSIBLE XSS ATTACK
+            flash("WARNING!!! WRONG DATA", 'danger')
             return redirect(url_for('reset_request'))
         if(validator.check_if_detected_injection_attack(form.password.data) or validator.check_if_detected_injection_attack(form.confirm_password.data)):
-            flash("WARNING!!! WRONG DATA", 'danger')#DETECTED POSSIBLE SQL INJECTION ATTACK
+            flash("WARNING!!! WRONG DATA", 'danger')
             return redirect(url_for('reset_request'))
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user.password = hashed_password

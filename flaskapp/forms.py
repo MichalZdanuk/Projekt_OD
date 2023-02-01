@@ -7,7 +7,7 @@ from flaskapp.models import User
 import flaskapp.validate_data as validator
 
 
-class RegistrationForm(FlaskForm):#dorobic walidacje skladni formatu danych
+class RegistrationForm(FlaskForm):
     username = StringField('Username',
                             validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email',
@@ -100,17 +100,7 @@ class ResetPasswordForm(FlaskForm):
         if not validator.is_userfield_valid(confirm_password.data):
             raise ValidationError('Invalid password syntax')
 
-#adding permission for other user
 class PermissionForm(FlaskForm):
     allowed_user = StringField('Allow User')
     disallowed_user = StringField('Disallow User')
-
-    # def validate_allowed_user(self, allowed_user):
-    #     if allowed_user.data != "":
-    #         if not validator.is_userfield_valid(allowed_user.data):
-    #             raise ValidationError('Invalid username')
-    # def validate_disallowed_user(self, disallowed_user):
-    #     if disallowed_user.data != "":
-    #         if not validator.is_userfield_valid(disallowed_user.data):
-    #             raise ValidationError('Invalid username')
     submit = SubmitField('Manage Permission')
